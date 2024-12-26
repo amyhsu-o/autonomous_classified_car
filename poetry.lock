@@ -1,0 +1,59 @@
+[[package]]
+name = "numpy"
+version = "2.2.1"
+description = "Fundamental package for array computing in Python"
+category = "main"
+optional = false
+python-versions = ">=3.10"
+
+[[package]]
+name = "opencv-python"
+version = "4.10.0.84"
+description = "Wrapper package for OpenCV python bindings."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+numpy = [
+    {version = ">=1.21.2", markers = "python_version >= \"3.10\""},
+    {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\""},
+    {version = ">=1.23.5", markers = "python_version >= \"3.11\""},
+    {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
+    {version = ">=1.19.3", markers = "python_version >= \"3.6\" and platform_system == \"Linux\" and platform_machine == \"aarch64\" or python_version >= \"3.9\""},
+    {version = ">=1.17.0", markers = "python_version >= \"3.7\""},
+    {version = ">=1.17.3", markers = "python_version >= \"3.8\""},
+]
+
+[[package]]
+name = "pyserial"
+version = "3.5"
+description = "Python Serial Port Extension"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+cp2110 = ["hidapi"]
+
+[[package]]
+name = "python-dotenv"
+version = "1.0.1"
+description = "Read key-value pairs from a .env file and set them as environment variables"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[package.extras]
+cli = ["click (>=5.0)"]
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.10"
+content-hash = "d0e1e47fe2f392a6261b92c74cd697daa83931f6e867de46ebe5a3a2c8b60b7c"
+
+[metadata.files]
+numpy = []
+opencv-python = []
+pyserial = []
+python-dotenv = []

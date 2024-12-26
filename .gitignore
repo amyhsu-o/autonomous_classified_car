@@ -1,0 +1,4 @@
+assets/*
+temp/*
+.python-version
+.env
