@@ -3,14 +3,11 @@ import numpy as np
 from serial import Serial
 import os
 from time import time
+from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
 
-BASE_DISTANCE_INFO = {
-    "distance": float(os.getenv("BASE_DISANCE")),
-    "radius": float(os.getenv("BASE_RADIUS")),
-}
 WINDOW_NAME = "frame"
 
 if os.getenv("ARDUINO_CONNECTED") == "True":
@@ -28,7 +25,22 @@ def send_message_to_arduino(data):
         else:
             print("Serial port is not open.")
     else:
-        print(f"Send {data} to Arduino")
+        print(f"{datetime.now()}\nSend {data} to Arduino")
+
+
+def get_distance(frame_width, radius):
+    # distance = -\frac{w_{real} * W_{frame}}{2 * w_{pixels} * tan(HFOV / 2)}
+    w_real = float(os.getenv("BALL_DIAMETER"))
+    HFOV = float(os.getenv("HFOV"))
+    distance = -(w_real * frame_width) / (2 * radius * np.tan(HFOV / 2))
+    return float(distance)
+
+
+def get_angle(frame_width, x):
+    # angle = \frac{\delta x}{W_{frame} * HFOV
+    HFOV = float(os.getenv("HFOV"))
+    angle = (x - frame_width / 2) / frame_width * HFOV
+    return float(angle)
 
 
 is_detected = False
@@ -41,15 +53,8 @@ while True:
     if not ret:
         raise ValueError("Can't receive frame.")
 
-    # frame size
-    frame_center_x, frame_center_y = frame.shape[1] // 2, frame.shape[0] // 2
-    # print(f"frame center: ({frame_center_x}, {frame_center_y})")
-
     # turn to hsv
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-
-    # find contours
-    edges = cv.Canny(frame, 100, 200)
 
     # color info
     red_lower = np.array([0, 120, 70])
@@ -97,12 +102,9 @@ while True:
                     cv.circle(
                         frame, (int(x), int(y)), int(radius), info["border_color"], 2
                     )
-                    distance = (
-                        BASE_DISTANCE_INFO["distance"]
-                        * radius
-                        / BASE_DISTANCE_INFO["radius"]
-                    )
-                    angle = np.degrees(np.arctan2(x - frame_center_x, distance))
+                    distance = get_distance(frame.shape[1], radius)
+                    angle = get_angle(frame.shape[1], x)
+
                     # print(f"\n===== {color} =====")
                     # print(f"coord: ({x}, {y})")
                     # print(f"radius: {radius}")
